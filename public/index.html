@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n LLM Agent Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    
+    <!-- Background Animation Elements -->
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="bg-shape shape-3"></div>
+
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="glass-header">
+            <div class="logo-area">
+                <i class="fa-solid fa-microchip gradient-text"></i>
+                <h1><span class="gradient-text">n8n</span> LLM Agent Dashboard</h1>
+            </div>
+            
+            <div class="header-actions">
+                <div class="auto-refresh-indicator" id="auto-refresh-indicator" title="Auto-refresh every 30s">
+                    <i class="fa-solid fa-sync fa-spin"></i>
+                    <span>30s</span>
+                </div>
+                <button id="btn-refresh" class="btn-icon" title="Refresh Workflows" disabled>
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+                <button id="btn-settings" class="btn-icon" title="API Settings">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="content-area">
+            
+            <!-- Dashboard View -->
+            <section id="view-dashboard" class="glass-panel main-panel view-hidden">
+                <div class="panel-header">
+                    <h2>Active Workflows & Agents</h2>
+                    <div class="stats-badge" id="workflow-stats">Loading...</div>
+                </div>
+                
+                <div class="table-wrapper">
+                    <table class="agent-table">
+                        <thead>
+                            <tr>
+                                <th>Workflow Name</th>
+                                <th>Agent Node</th>
+                                <th>LLM Provider</th>
+                                <th>Model Version</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="agent-table-body">
+                            <!-- Rows injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="loading-state" class="state-container">
+                    <div class="spinner"></div>
+                    <p>Fetching workflows from n8n...</p>
+                </div>
+                
+                <div id="empty-state" class="state-container view-hidden">
+                    <i class="fa-solid fa-folder-open empty-icon"></i>
+                    <p>No active workflows with AI Agent nodes found.</p>
+                </div>
+            </section>
+            
+        </main>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="modal-settings">
+        <div class="glass-modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-link"></i> n8n Connection Setup</h3>
+                <button class="btn-close" id="btn-close-settings"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Connect the dashboard to your n8n instance.</p>
+                
+                <form onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="input-n8n-url">n8n Base URL</label>
+                        <input type="url" id="input-n8n-url" placeholder="https://your-n8n.com" spellcheck="false" autocomplete="url">
+                        <small>Include protocol (http/https). No trailing slash needed.</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="input-n8n-api">n8n API Key</label>
+                        <input type="password" id="input-n8n-api" placeholder="n8n_api_..." autocomplete="current-password">
+                        <small>Generate this in n8n Settings > API.</small>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-primary" id="btn-save-settings">Connect & Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">
+        <i class="toast-icon"></i>
+        <span class="toast-msg"></span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
