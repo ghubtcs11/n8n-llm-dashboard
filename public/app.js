@@ -53,226 +53,114 @@ function debounce(func, wait) {
     };
 }
 
-// ─── Provider Config ────────────────────────────────────────
-const PROVIDERS = {
-    lmChatGoogleGemini: {
-        label: 'Google Gemini',
-        color: '#4285f4',
-        paramKey: 'modelName',
-        credType: 'googlePalmApi',
-        models: [
-            'models/gemini-2.5-pro-preview-06-05',
-            'models/gemini-2.5-pro-preview-05-06',
-            'models/gemini-2.5-pro-exp-03-25',
-            'models/gemini-2.0-flash',
-            'models/gemini-2.0-flash-001',
-            'models/gemini-2.0-flash-exp',
-            'models/gemini-2.0-flash-lite',
-            'models/gemini-2.0-flash-lite-001',
-            'models/gemini-2.0-pro-exp-02-05',
-            'models/gemini-1.5-pro-latest',
-            'models/gemini-1.5-pro-002',
-            'models/gemini-1.5-pro-001',
-            'models/gemini-1.5-flash-latest',
-            'models/gemini-1.5-flash-002',
-            'models/gemini-1.5-flash-001',
-            'models/gemini-1.5-flash-8b-latest',
-            'models/gemini-1.5-flash-8b-001',
-            'models/gemini-1.0-pro',
-            'models/gemini-1.0-pro-001',
-            'models/gemini-1.0-pro-vision-latest',
-            'models/gemini-exp-1206',
-            'models/gemini-exp-1121',
-            'models/gemini-exp-1114',
-            'models/gemini-exp-1026',
-            'models/gemini-3-flash-preview',
-            'models/gemini-3.1-flash-lite-preview',
-        ]
+// ─── Provider Config (Minimal - models loaded from JSON + localStorage) ────
+const PROVIDER_BASE = {
+    lmChatGoogleGemini: { label: 'Google Gemini', color: '#4285f4', paramKey: 'modelName', credType: 'googlePalmApi' },
+    lmChatOpenAi: { 
+        label: 'OpenAI', color: '#10a37f', paramKey: 'model', credType: 'openAiApi',
+        credLabels: { 'lmstudio': { label: 'LMStudio', color: '#8b5cf6' }, 'local': { label: 'Local AI', color: '#8b5cf6' }, 'opencode': { label: 'OpenCode', color: '#06b6d4' }, 'openrouter': { label: 'OpenRouter (OAI)', color: '#ef4444' }, 'chatanywhere': { label: 'ChatAnyWhere', color: '#f59e0b' } }
     },
-    lmChatOpenAi: {
-        label: 'OpenAI',
-        color: '#10a37f',
-        paramKey: 'model',
-        credType: 'openAiApi',
-        credLabels: {
-            'lmstudio': { label: 'LMStudio', color: '#8b5cf6' },
-            'local': { label: 'Local AI', color: '#8b5cf6' },
-            'opencode': { label: 'OpenCode', color: '#06b6d4' },
-            'openrouter': { label: 'OpenRouter (OAI)', color: '#ef4444' },
-            'chatanywhere': { label: 'ChatAnyWhere', color: '#f59e0b' },
-        },
-        models: [
-            'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano',
-            'gpt-4o', 'gpt-4o-2024-11-20', 'gpt-4o-2024-08-06', 'gpt-4o-2024-05-13',
-            'gpt-4o-mini', 'gpt-4o-mini-2024-07-18',
-            'gpt-4o-mini-ca', 'gpt-5-mini-ca',
-            'gpt-4-turbo', 'gpt-4-turbo-2024-04-09', 'gpt-4-turbo-preview',
-            'gpt-4', 'gpt-4-0125-preview', 'gpt-4-1106-preview',
-            'gpt-4-32k', 'gpt-4-32k-0613',
-            'gpt-3.5-turbo', 'gpt-3.5-turbo-0125', 'gpt-3.5-turbo-1106',
-            'gpt-3.5-turbo-16k', 'gpt-3.5-turbo-16k-0613',
-            'o1', 'o1-2024-12-17',
-            'o1-mini', 'o1-mini-2024-09-12',
-            'o1-preview', 'o1-preview-2024-09-12',
-            'o3-mini', 'o3-mini-2025-01-31',
-            'o3', 'o3-2025-04-16',
-            'o4-mini', 'o4-mini-2025-04-14',
-            'chatgpt-4o-latest',
-            'gpt-4.5-turbo', 'gpt-4.5-turbo-preview-02-27',
-            'zai-org/glm-4.6v-flash', 'glm-4.6:cloud',
-        ]
-    },
-    lmChatAnthropic: {
-        label: 'Anthropic',
-        color: '#d97706',
-        paramKey: 'model',
-        credType: 'anthropicApi',
-        models: [
-            'claude-opus-4-5-20250929',
-            'claude-opus-4-5-20250514',
-            'claude-opus-4-5',
-            'claude-sonnet-4-5-20250929',
-            'claude-sonnet-4-5-20250514',
-            'claude-sonnet-4-5',
-            'claude-3-7-sonnet-latest',
-            'claude-3-7-sonnet-20250219',
-            'claude-3-5-sonnet-latest',
-            'claude-3-5-sonnet-20241022',
-            'claude-3-5-sonnet-20240620',
-            'claude-3-5-haiku-latest',
-            'claude-3-5-haiku-20241022',
-            'claude-3-opus-latest',
-            'claude-3-opus-20240229',
-            'claude-3-sonnet-20240229',
-            'claude-3-haiku-20240307',
-            'claude-2.1', 'claude-2.0',
-            'claude-instant-1.2',
-        ]
-    },
-    lmChatOllama: {
-        label: 'Ollama',
-        color: '#7c3aed',
-        paramKey: 'model',
-        credType: 'ollamaApi',
-        models: [
-            'llama3.3:70b', 'llama3.3', 'llama3.2:3b', 'llama3.2:1b', 'llama3.2',
-            'llama3.1:405b', 'llama3.1:70b', 'llama3.1:8b', 'llama3.1',
-            'llama3', 'llama3:70b', 'llama3:8b',
-            'llama2', 'llama2:70b', 'llama2:13b', 'llama2:7b',
-            'llama2-uncensored', 'llama2-coder',
-            'mistral:7b', 'mistral', 'mistral-nemo', 'mistral-large',
-            'mixtral:8x7b', 'mixtral:8x22b',
-            'phi4', 'phi4:14b', 'phi3:14b', 'phi3:3.8b', 'phi3',
-            'qwen2.5:72b', 'qwen2.5:32b', 'qwen2.5:14b', 'qwen2.5:7b', 'qwen2.5:3b', 'qwen2.5',
-            'qwen3.5:9b', 'qwen3',
-            'deepseek-r1:70b', 'deepseek-r1:32b', 'deepseek-r1:14b', 'deepseek-r1:7b', 'deepseek-r1',
-            'deepseek-coder-v2', 'deepseek-coder:6.7b',
-            'codellama:70b', 'codellama:34b', 'codellama:13b', 'codellama:7b', 'codellama',
-            'gemma3:27b', 'gemma3:12b', 'gemma3:4b', 'gemma3:1b', 'gemma3',
-            'gemma2:27b', 'gemma2:9b', 'gemma2', 'gemma:7b', 'gemma',
-            'minimax-m2:cloud', 'glm-4.6:cloud',
-            'command-r', 'command-r-plus',
-            'dolphin3:8b', 'dolphin3', 'dolphin2.5',
-            'solar:10.7b', 'solar-pro',
-            'yi:34b', 'yi:6b', 'yi',
-            'starcoder2:15b', 'starcoder2:7b', 'starcoder2:3b',
-        ]
-    },
-    lmChatOpenRouter: {
-        label: 'OpenRouter',
-        color: '#ef4444',
-        paramKey: 'model',
-        credType: 'openRouterApi',
-        models: [
-            'anthropic/claude-opus-4.5',
-            'anthropic/claude-sonnet-4.5',
-            'anthropic/claude-3.7-sonnet',
-            'anthropic/claude-3.5-sonnet',
-            'anthropic/claude-3.5-sonnet:beta',
-            'anthropic/claude-3-opus',
-            'anthropic/claude-3-opus:beta',
-            'anthropic/claude-3-haiku',
-            'anthropic/claude-3-haiku:beta',
-            'google/gemini-2.5-pro-preview',
-            'google/gemini-2.0-flash-001',
-            'google/gemini-2.0-flash-exp:free',
-            'google/gemini-1.5-pro-latest',
-            'google/gemini-1.5-flash',
-            'google/gemini-pro',
-            'google/gemini-pro-vision',
-            'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano',
-            'openai/gpt-4o', 'openai/gpt-4o-2024-11-20',
-            'openai/gpt-4o-mini',
-            'openai/gpt-4-turbo', 'openai/gpt-4',
-            'openai/o1', 'openai/o1-mini', 'openai/o1-preview',
-            'openai/o3-mini', 'openai/o3-mini-high',
-            'meta-llama/llama-3.3-70b-instruct',
-            'meta-llama/llama-3.2-90b-vision-instruct',
-            'meta-llama/llama-3.2-11b-vision-instruct',
-            'meta-llama/llama-3.1-405b-instruct',
-            'meta-llama/llama-3.1-70b-instruct',
-            'meta-llama/llama-3.1-8b-instruct',
-            'mistralai/mistral-large',
-            'mistralai/mixtral-8x22b-instruct',
-            'mistralai/mixtral-8x7b-instruct',
-            'mistralai/mistral-7b-instruct',
-            'deepseek/deepseek-r1',
-            'deepseek/deepseek-chat',
-            'deepseek/deepseek-coder',
-            'qwen/qwen-2.5-72b-instruct',
-            'qwen/qwen-2.5-7b-instruct',
-            'qwen/qwq-32b-preview',
-            'google/gemma-3-27b-it',
-            'google/gemma-2-27b-it',
-            'microsoft/phi-4',
-            'x-ai/grok-beta',
-            'perplexity/llama-3.1-sonar-huge-128k-online',
-            'perplexity/llama-3.1-sonar-large-128k-online',
-            'cohere/command-r-plus',
-            'cohere/command-r',
-        ]
-    },
-    lmChatMistralCloud: {
-        label: 'Mistral AI',
-        color: '#f59e0b',
-        paramKey: 'model',
-        credType: 'mistralCloudApi',
-        models: [
-            'mistral-large-latest',
-            'mistral-large-2411',
-            'mistral-large-2407',
-            'mistral-medium-latest',
-            'mistral-medium-2505',
-            'mistral-small-latest',
-            'mistral-small-2501',
-            'mistral-saba-latest',
-            'mistral-saba-2502',
-            'open-mistral-nemo',
-            'open-mistral-7b',
-            'open-mixtral-8x22b',
-            'open-mixtral-8x7b',
-            'codestral-latest',
-            'codestral-2501',
-            'codestral-mamba',
-            'ministral-8b-latest',
-            'ministral-3b-latest',
-            'pixtral-large-latest',
-            'pixtral-12b',
-        ]
-    },
-    lmChatOpenCode: {
-        label: 'OpenCode',
-        color: '#06b6d4',
-        paramKey: 'model',
-        credType: 'openCodeApi',
-        models: [
-            'nvidia::qwen/qwen3-next-80b-a3b-instruct',
-            'nvidia::meta/llama-3.3-70b-instruct',
-            'nvidia::deepseek-ai/deepseek-r1',
-            'nvidia::mistralai/mistral-large',
-        ]
-    }
+    lmChatAnthropic: { label: 'Anthropic', color: '#d97706', paramKey: 'model', credType: 'anthropicApi' },
+    lmChatOllama: { label: 'Ollama', color: '#7c3aed', paramKey: 'model', credType: 'ollamaApi' },
+    lmChatOpenRouter: { label: 'OpenRouter', color: '#ef4444', paramKey: 'model', credType: 'openRouterApi' },
+    lmChatMistralCloud: { label: 'Mistral AI', color: '#f59e0b', paramKey: 'model', credType: 'mistralCloudApi' },
+    lmChatOpenCode: { label: 'OpenCode', color: '#06b6d4', paramKey: 'model', credType: 'openCodeApi' }
 };
+
+let BASE_MODELS = {};
+let PROVIDERS = {};
+
+async function loadModels() {
+    try {
+        const res = await fetch('/models.json');
+        BASE_MODELS = await res.json();
+        
+        PROVIDERS = {};
+        for (const [key, config] of Object.entries(PROVIDER_BASE)) {
+            PROVIDERS[key] = { ...config, models: BASE_MODELS[key]?.models || [] };
+        }
+        
+        mergeCustomModels();
+    } catch (e) {
+        console.warn('Failed to load models.json, using fallback:', e);
+        PROVIDERS = PROVIDER_BASE;
+    }
+}
+
+function getCustomModels() {
+    try {
+        return JSON.parse(localStorage.getItem('custom_models') || '{}');
+    } catch { return {}; }
+}
+
+function saveCustomModel(providerKey, modelName) {
+    if (!modelName) return;
+    const custom = getCustomModels();
+    if (!custom[providerKey]) custom[providerKey] = [];
+    if (!custom[providerKey].includes(modelName)) {
+        custom[providerKey].push(modelName);
+        localStorage.setItem('custom_models', JSON.stringify(custom));
+    }
+}
+
+let workflowModelsCache = {};
+
+function mergeCustomModels() {
+    const custom = getCustomModels();
+    for (const [providerKey, models] of Object.entries(custom)) {
+        if (PROVIDERS[providerKey] && !PROVIDERS[providerKey].customModels) {
+            PROVIDERS[providerKey].customModels = [];
+        }
+        if (PROVIDERS[providerKey]) {
+            for (const model of models) {
+                if (!PROVIDERS[providerKey].customModels.includes(model)) {
+                    PROVIDERS[providerKey].customModels.push(model);
+                }
+            }
+        }
+    }
+}
+
+function addWorkflowModelsToProviders(groups) {
+    workflowModelsCache = {};
+    for (const wf of groups) {
+        for (const agent of wf.agents) {
+            for (const ln of agent.lmNodes) {
+                if (ln.model && ln.providerKey) {
+                    if (!workflowModelsCache[ln.providerKey]) {
+                        workflowModelsCache[ln.providerKey] = new Set();
+                    }
+                    workflowModelsCache[ln.providerKey].add(ln.model);
+                }
+            }
+        }
+    }
+}
+
+function getProviderModels(providerKey) {
+    const cfg = PROVIDERS[providerKey];
+    if (!cfg) return [];
+    
+    const workflowModels = Array.from(workflowModelsCache[providerKey] || []);
+    const customModels = cfg.customModels || [];
+    const baseModels = cfg.models || [];
+    
+    const result = [];
+    const seen = new Set();
+    
+    for (const m of [...workflowModels, ...customModels, ...baseModels]) {
+        if (!seen.has(m)) {
+            seen.add(m);
+            result.push(m);
+        }
+    }
+    
+    return result;
+}
+
+function getProviderModels(providerKey) {
+    return PROVIDERS[providerKey]?.models || [];
+}
 
 // ─── Helpers ────────────────────────────────────────────────
 
@@ -377,8 +265,9 @@ async function loadWorkflows() {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || `Failed to load (${res.status})`);
         
-        const workflows = data.data || data;
-        processWorkflows(workflows);
+const workflows = data.data || data;
+    processWorkflows(workflows);
+    addWorkflowModelsToProviders(workflowGroups);
         
         if (!autoRefreshInterval) {
             startAutoRefresh();
@@ -502,7 +391,7 @@ function saveCredentials() {
     
     showModal(false);
     showToast('Settings saved!', 'success');
-    loadWorkflows();
+    loadModels().then(() => loadWorkflows());
 }
 
 // ─── Init ───────────────────────────────────────────────────
@@ -525,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    loadWorkflows();
+    loadModels().then(() => loadWorkflows());
 });
 
 function getAgentExecutionOrder(agents, allNodes, connections) {
@@ -838,11 +727,11 @@ function renderTable() {
             agent.lmNodes.forEach((x) => {
                 const ln = x.ln;
                 const originalLnIdx = x.originalLnIdx;
-                const id = `${wfIdx}-${agent.originalAgentIdx}-${originalLnIdx}`;
-                const cfg = PROVIDERS[ln.providerKey] || { label: ln.providerKey, color: '#888', models: [] };
-                const meta = getProviderMeta(ln.providerKey, ln.credential);
+const id = `${wfIdx}-${agent.originalAgentIdx}-${originalLnIdx}`;
+    const cfg = PROVIDERS[ln.providerKey] || { label: ln.providerKey, color: '#888', models: [] };
+    const meta = getProviderMeta(ln.providerKey, ln.credential);
 
-                const knownModels = [...cfg.models];
+    const knownModels = [...getProviderModels(ln.providerKey)];
                 const currentModel = ln.model;
                 const isCustomModel = currentModel && !currentModel.startsWith('=') && !knownModels.includes(currentModel);
                 
@@ -965,11 +854,11 @@ function renderMobileCards(groups) {
             agent.lmNodes.forEach((x) => {
                 const ln = x.ln;
                 const originalLnIdx = x.originalLnIdx;
-                const id = `mobile-${wfIdx}-${agent.originalAgentIdx}-${originalLnIdx}`;
-                const cfg = PROVIDERS[ln.providerKey] || { label: ln.providerKey, color: '#888', models: [] };
-                const meta = getProviderMeta(ln.providerKey, ln.credential);
+const id = `mobile-${wfIdx}-${agent.originalAgentIdx}-${originalLnIdx}`;
+    const cfg = PROVIDERS[ln.providerKey] || { label: ln.providerKey, color: '#888', models: [] };
+    const meta = getProviderMeta(ln.providerKey, ln.credential);
 
-                const knownModels = [...cfg.models];
+    const knownModels = [...getProviderModels(ln.providerKey)];
                 const currentModel = ln.model;
                 const isCustomModel = currentModel && !currentModel.startsWith('=') && !knownModels.includes(currentModel);
                 
@@ -1194,6 +1083,7 @@ async function onSave(e) {
         ln.model = newModel;
         wf.fullWorkflowData = data;
         select.dataset.original = newModel;
+        saveCustomModel(ln.providerKey, newModel);
 
         showToast('Saved to n8n!', 'success');
         btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved!';
