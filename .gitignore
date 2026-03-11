@@ -20,10 +20,7 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+/tmp/n8n-llm-dashboard.log
 
-# Optional npm cache
-.npm
-
-# Build outputs
-dist/
-build/
+# PID file
+.pid
