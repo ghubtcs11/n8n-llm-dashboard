@@ -2,7 +2,7 @@
 
 A beautiful web-based dashboard for viewing and managing AI agents and LLM configurations across your n8n workflows.
 
-![Dashboard Preview](screenshot.png)
+![Dashboard Preview](screenshot.jpeg)
 
 ## Features
 
